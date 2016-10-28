@@ -16,15 +16,15 @@ export class AppService {
     registration: Registration[];
     constructor(public http: Http) { }
 
-    getAll(): Observable<any> {
-        let res = this.http.get('https://profile-app-dev-robert-leidl.c9users.io/' + 'registration')
+   getAll(): Observable<any> {
+        let res = this.http.get('https://profile-app-dev-robert-leidl.c9users.io/registration/export/csv')
             .map(response => response.json())
             .map((registrations: Array<any>) => {
                 let result: Array<Registration> = [];
                 if (registrations) {
                     registrations.forEach((registration) => {
                         let id = registration._id.toString();
-                        registration.playerID = id.substr(id.length - 5);
+                        registration._id = id.substr(id.length - 5);
                         result.push(registration);
                     });
                 }
@@ -33,11 +33,12 @@ export class AppService {
             .catch(this.handleError);
         return res;
     }
-
+    
     downloadfile(): Observable<any> {
         var headers = new Headers();
         headers.append('responseType', 'arraybuffer');
-        return this.http.get('https://profile-app-dev-robert-leidl.c9users.io/registration/test/csvDownload', { headers: headers })
+        headers.append('accept ', 'data:image/png');
+        return this.http.post('https://profile-app-dev-robert-leidl.c9users.io/registration/test/csvDownload', { headers: headers })
             // .map(
             // (res: any) => res.text()            
             // )
